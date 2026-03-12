@@ -14,82 +14,63 @@
             --bg: #f5f2ec; --accent: #1a3a5c; --muted: #8a8478; --white: #ffffff;
             --azul: #003f6b; --azul-vivo: #005fa3; --ouro: #FFD700; --ouro-alaranjado: #FFB800;
             --vermelho: #d32f2f; --vermelho-alerta: rgba(211, 47, 47, 0.2);
-            --verde: #2e7d32; --cinza: #f0f2f5; --cinza2: #dde1e7; --texto: #1a1e27;
+            --texto: #1a1e27; --cinza2: #dde1e7;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--accent); font-family: 'Barlow', sans-serif; min-height: 100vh; overflow-x: hidden; }
 
-        /* --- TELA INICIAL (PORTAL) --- */
+        /* --- PORTAL (ENTRADA) --- */
         #portal-entrada {
             position: fixed; inset: 0; z-index: 9999;
-            background: var(--bg); display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; padding: 20px;
+            background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 20px;
         }
-        .portal-card { text-align: center; max-width: 500px; width: 100%; padding: 50px 40px; background: rgba(255, 255, 255, 0.4); border-radius: 28px; backdrop-filter: blur(10px); border: 1px solid rgba(26, 58, 92, 0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .portal-card h1 { font-family: 'DM Serif Display', serif; font-size: 48px; margin: 0; color: var(--accent); letter-spacing: -1px; }
+        .portal-card { 
+            text-align: center; max-width: 550px; width: 100%; 
+            padding: 50px; background: rgba(255, 255, 255, 0.4); 
+            border-radius: 28px; backdrop-filter: blur(10px); 
+            border: 1px solid rgba(26, 58, 92, 0.1); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        }
+        .portal-card h1 { font-family: 'DM Serif Display', serif; font-size: 52px; margin: 0; color: var(--accent); }
 
-        /* NOVO ÍCONE DO LEMA (LETRA GRANDE E IMPACTANTE) */
         .portal-lema-icon {
             display: block; width: 100%; background-color: #000000; color: var(--ouro-alaranjado);
-            font-family: 'Syne', sans-serif; /* Mesma fonte do título */
-            font-size: 26px; /* Letra grande, quase tamanho do título */
-            text-transform: uppercase; letter-spacing: 1px; font-weight: 700;
-            padding: 15px 25px; border-radius: 12px; margin: 15px 0 45px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3); border: 2px solid var(--ouro-alaranjado);
+            font-family: 'Syne', sans-serif; font-size: 24px; text-transform: uppercase; 
+            letter-spacing: 1px; font-weight: 700; padding: 18px 20px; 
+            border-radius: 12px; margin: 20px 0 40px; border: 2px solid var(--ouro-alaranjado);
         }
 
-        .opcoes-container { display: flex; flex-direction: column; gap: 18px; width: 100%; }
-        .portal-input-group { display: flex; align-items: center; background: var(--white); border: 2px solid var(--accent); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .btn-trigger-cep { background: var(--accent); color: white; font-family: 'DM Mono', monospace; font-weight: bold; padding: 18px 25px; cursor: pointer; border: none; font-size: 16px; }
-        .portal-input-group input { border: none; outline: none; font-family: 'DM Mono', monospace; font-size: 22px; width: 100%; padding: 12px 20px; background: transparent; color: var(--accent); }
-        .portal-divisor { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin: 8px 0; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-geo-full { display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--white); color: var(--accent); border: 2px solid var(--accent); border-radius: 14px; padding: 18px; font-weight: 700; cursor: pointer; font-family: 'Syne'; font-size: 15px; text-transform: uppercase; transition: all 0.2s; }
-        .btn-geo-full:hover { background: var(--accent); color: white; }
+        .opcoes-container { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        .portal-input-group { display: flex; align-items: center; background: var(--white); border: 2px solid var(--accent); border-radius: 14px; overflow: hidden; }
+        .btn-trigger-cep { background: var(--accent); color: white; font-family: 'DM Mono', monospace; font-weight: bold; padding: 20px 30px; cursor: pointer; border: none; font-size: 18px; }
+        .portal-input-group input { border: none; outline: none; font-family: 'DM Mono', monospace; font-size: 24px; width: 100%; padding: 15px; background: transparent; }
+        .portal-divisor { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
+        .btn-geo-full { display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--white); color: var(--accent); border: 2px solid var(--accent); border-radius: 14px; padding: 20px; font-weight: 700; cursor: pointer; font-family: 'Syne'; font-size: 16px; text-transform: uppercase; }
 
         /* --- SISTEMA (ZELADOR) --- */
         #sistema-auditoria { display: none; }
-        header { background: var(--azul); color: var(--white); padding: 18px 20px 14px; text-align: center; }
-        header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 0.12em; color: var(--ouro); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .lema-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.2em; color: rgba(255,255,255,0.7); text-transform: uppercase; margin-top: 4px; }
+        header { background: var(--azul); color: var(--white); padding: 20px; text-align: center; }
+        header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--ouro); letter-spacing: 2px; }
         
-        #map { height: 300px; margin: 12px; border-radius: 12px; border: 2px solid var(--cinza2); z-index: 1; }
-        .card { background: var(--white); border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 12px; padding: 16px; }
-        .card-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; color: var(--azul); margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid var(--cinza2); padding-bottom: 5px; }
-
-        .metricas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 12px 12px; }
-        .metrica { background: var(--white); border-radius: 10px; padding: 14px; border-top: 4px solid var(--azul); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .metrica-label { font-size: 0.65rem; color: #888; font-weight: 700; text-transform: uppercase; }
-        .metrica-valor { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--texto); margin-top: 4px; }
-
-        .ia-box { background: #f0f4f8; border: 1px solid #d1d9e0; border-radius: 10px; padding: 14px; }
-        .ia-texto { font-size: 0.9rem; color: #333; line-height: 1.6; }
-        .alerta-item { border-left: 5px solid var(--vermelho); background: #fff5f5; padding: 12px; margin-bottom: 10px; border-radius: 4px; font-size: 0.85rem; }
-        .obra-item { background: var(--cinza); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--cinza2); }
+        #map { height: 350px; margin: 15px; border-radius: 12px; border: 2px solid var(--cinza2); z-index: 1; }
+        .card-info { background: var(--white); border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 15px; padding: 18px; }
         
-        #status-wrap { display: none; margin: 12px; background: var(--azul); border-radius: 8px; padding: 15px; color: white; align-items: center; justify-content: center; gap: 12px; z-index: 1000; position: relative;}
-        .spin { width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.2); border-top-color: var(--ouro); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .metricas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 15px 15px; }
+        .metrica { background: var(--white); border-radius: 10px; padding: 15px; border-top: 4px solid var(--azul); }
+        .metrica-valor { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--texto); }
+
+        .bairro-header { background: linear-gradient(135deg, var(--azul), var(--azul-vivo)); border-radius: 12px; margin: 0 15px 15px; padding: 25px; color: white; }
+        .bairro-nome { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--ouro); }
+        
+        #status-wrap { display: none; margin: 15px; background: var(--azul); border-radius: 8px; padding: 15px; color: white; align-items: center; justify-content: center; gap: 12px; }
+        .spin { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.2); border-top-color: var(--ouro); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
-        .bairro-header { background: linear-gradient(135deg, var(--azul), var(--azul-vivo)); border-radius: 12px; margin: 0 12px 12px; padding: 20px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .bairro-nome { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--ouro); letter-spacing: 1px; }
-        .rua-detalhe { font-family: 'DM Mono'; font-size: 0.75rem; opacity: 0.9; margin-top: 5px; }
 
-        /* ESTILO DOS PONTOS PULSANTES (RADAR) */
-        @keyframes pulse-red {
-            0% { transform: scale(0.5); opacity: 1; }
-            100% { transform: scale(2.5); opacity: 0; }
-        }
-        .radar-pulse {
-            width: 20px; height: 20px; background-color: var(--vermelho);
-            border-radius: 50%; position: absolute;
-            border: 2px solid white; box-shadow: 0 0 10px rgba(211,47,47,0.5);
-        }
-        .radar-pulse::after {
-            content: ''; width: 100%; height: 100%; background-color: var(--vermelho-alerta);
-            border-radius: 50%; position: absolute; top: 0; left: 0;
-            animation: pulse-red 1.5s infinite;
-        }
+        /* RADAR ANIMATION */
+        @keyframes pulse-red { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+        .radar-pulse { width: 15px; height: 15px; background: var(--vermelho); border-radius: 50%; position: relative; border: 2px solid white; }
+        .radar-pulse::after { content: ''; width: 100%; height: 100%; background: var(--vermelho); border-radius: 50%; position: absolute; animation: pulse-red 1.5s infinite; }
     </style>
 </head>
 <body>
@@ -104,4 +85,132 @@
                 <input type="text" id="portal-cep-input" placeholder="00000-000" maxlength="9" inputmode="numeric">
             </div>
             <div class="portal-divisor">— OU —</div>
-            <button class="btn-geo
+            <button class="btn-geo-full" onclick="entrarPelaGeo()">📍 USAR GEOLOCALIZAÇÃO</button>
+        </div>
+    </div>
+</div>
+
+<div id="sistema-auditoria">
+    <header>
+        <h1>⚖ ZELADOR CÍVICO</h1>
+        <p style="font-size: 0.7rem; letter-spacing: 2px; opacity: 0.8;">TRANSFORMANDO VISÃO EM PODER</p>
+    </header>
+
+    <div id="status-wrap"><div class="spin"></div><span id="status-texto">Processando auditoria...</span></div>
+
+    <div id="map"></div>
+
+    <div id="resultados" style="display:none;">
+        <div class="bairro-header">
+            <div class="bairro-nome" id="r-bairro">...</div>
+            <div id="r-rua" style="font-family: 'DM Mono'; font-size: 0.9rem; opacity: 0.9;">...</div>
+            <div id="r-cep" style="font-size: 0.8rem; opacity: 0.7;">CEP 00000-000</div>
+        </div>
+
+        <div class="metricas-grid">
+            <div class="metrica"><small>OBRAS</small><div class="metrica-valor" id="r-obras">0</div></div>
+            <div class="metrica"><small>INVESTIMENTO</small><div class="metrica-valor" id="r-invest">R$ 0</div></div>
+            <div class="metrica"><small>RETORNO</small><div class="metrica-valor" id="r-retorno">0%</div></div>
+            <div class="metrica"><small>DISPARIDADE</small><div class="metrica-valor" id="r-disparidade">...</div></div>
+        </div>
+
+        <div class="card-info" id="r-alertas-container">
+            <strong style="color: var(--vermelho)">🚨 ALERTAS NO RADAR</strong>
+            <div id="r-alertas" style="margin-top:10px"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var mapa = null;
+    var marcador = null;
+    var camadaAlertas = L.layerGroup();
+
+    // MÁSCARA CEP COM HÍFEN
+    document.getElementById('portal-cep-input').addEventListener('input', e => {
+        let v = e.target.value.replace(/\D/g,'');
+        if(v.length > 5) v = v.slice(0,5) + '-' + v.slice(5,8);
+        e.target.value = v;
+    });
+
+    function entrarPeloPortal() {
+        const input = document.getElementById('portal-cep-input').value;
+        const cepLimpo = input.replace(/\D/g,'');
+        
+        if(cepLimpo.length === 8) {
+            document.getElementById('portal-entrada').style.display = 'none';
+            document.getElementById('sistema-auditoria').style.display = 'block';
+            inicializarMapa();
+            processar(cepLimpo);
+        } else { alert("CEP incompleto."); }
+    }
+
+    function entrarPelaGeo() {
+        if (!navigator.geolocation) return alert("GPS não suportado.");
+        document.getElementById('portal-entrada').style.display = 'none';
+        document.getElementById('sistema-auditoria').style.display = 'block';
+        inicializarMapa();
+        navigator.geolocation.getCurrentPosition(async (p) => {
+            const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${p.coords.latitude}&lon=${p.coords.longitude}`);
+            const data = await resp.json();
+            const cep = data.address.postcode ? data.address.postcode.replace(/\D/g,'') : "01001000";
+            processar(cep);
+        }, () => { alert("Erro GPS."); location.reload(); });
+    }
+
+    function inicializarMapa() {
+        if (!mapa) {
+            mapa = L.map('map').setView([-23.5505, -46.6333], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapa);
+            camadaAlertas.addTo(mapa);
+        }
+    }
+
+    async function processar(cep) {
+        document.getElementById('status-wrap').style.display = 'flex';
+        try {
+            const r = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const d = await r.json();
+            const busca = `${d.logradouro}, ${d.bairro}, São Paulo`;
+            const geo = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(busca)}`);
+            const gd = await geo.json();
+            
+            if (gd[0]) {
+                const lat = parseFloat(gd[0].lat), lon = parseFloat(gd[0].lon);
+                mapa.setView([lat, lon], 16);
+                if (marcador) mapa.removeLayer(marcador);
+                marcador = L.marker([lat, lon]).addTo(mapa).bindPopup(`<b>Sua Localização</b>`).openPopup();
+                ativarRadar(lat, lon);
+            }
+            render(cep, d);
+        } catch(e) { console.error(e); }
+        document.getElementById('status-wrap').style.display = 'none';
+    }
+
+    function ativarRadar(lat, lon) {
+        camadaAlertas.clearLayers();
+        const iconRadar = L.divIcon({ className: '', html: '<div class="radar-pulse"></div>', iconSize: [15, 15] });
+        for (let i = 0; i < 3; i++) {
+            const rLat = lat + (Math.random() - 0.5) * 0.006;
+            const rLon = lon + (Math.random() - 0.5) * 0.006;
+            L.marker([rLat, rLon], { icon: iconRadar }).addTo(camadaAlertas).bindPopup("<b>Alerta de Auditoria</b><br>Contrato sob análise.");
+        }
+    }
+
+    function render(cep, info) {
+        document.getElementById('resultados').style.display = 'block';
+        document.getElementById('r-bairro').textContent = info.bairro || "São Paulo";
+        document.getElementById('r-rua').textContent = info.logradouro || "";
+        document.getElementById('r-cep').textContent = "CEP " + cep;
+        
+        // Dados simulados baseados no CEP
+        const isCentro = cep.startsWith('01');
+        document.getElementById('r-obras').textContent = isCentro ? "34" : "12";
+        document.getElementById('r-invest').textContent = isCentro ? "R$ 48M" : "R$ 14M";
+        document.getElementById('r-retorno').textContent = isCentro ? "18%" : "7%";
+        document.getElementById('r-disparidade').textContent = isCentro ? "Alta" : "Média";
+        document.getElementById('r-alertas').innerHTML = "• Sobrepreço em contrato de zeladoria<br>• Obra de calçada com atraso";
+    }
+</script>
+</body>
+</html>
