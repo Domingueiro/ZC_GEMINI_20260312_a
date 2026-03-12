@@ -6,7 +6,7 @@
     <title>Zelador Cívico — Auditoria Territorial</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Syne:wght@700&family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Syne:wght@700&family=Bebas+Neue&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
@@ -14,21 +14,33 @@
             --bg: #f5f2ec; --accent: #1a3a5c; --muted: #8a8478; --white: #ffffff;
             --azul: #003f6b; --ouro: #FFD700; --ouro-alaranjado: #FFB800;
             --vermelho: #d32f2f; --cinza2: #dde1e7;
-            --emenda-cor: #e67e22;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--accent); font-family: 'Barlow', sans-serif; min-height: 100vh; }
+        body { background: var(--bg); color: var(--accent); font-family: 'Barlow', sans-serif; }
 
         /* --- PORTAL DE ENTRADA --- */
         #portal-entrada { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 20px; }
         .portal-card { text-align: center; max-width: 500px; width: 100%; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid var(--cinza2); }
-        .portal-card h1 { font-family: 'DM Serif Display', serif; font-size: 42px; color: var(--accent); margin-bottom: 10px; }
-        .lema-destaque { background: #000; color: var(--ouro-alaranjado); font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; text-transform: uppercase; padding: 15px; border-radius: 10px; margin: 20px 0 30px; border: 2px solid var(--ouro-alaranjado); }
+        .portal-card h1 { font-family: 'DM Serif Display', serif; font-size: 38px; margin-bottom: 10px; }
+        .lema-destaque { background: #000; color: var(--ouro-alaranjado); font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; text-transform: uppercase; padding: 15px; border-radius: 10px; margin: 20px 0 30px; border: 2px solid var(--ouro-alaranjado); }
 
-        .input-group { display: flex; border: 2px solid var(--accent); border-radius: 10px; overflow: hidden; margin-bottom: 15px; background: white; }
-        .input-group input { flex: 1; border: none; padding: 18px; font-family: 'DM Mono'; font-size: 22px; outline: none; width: 100%; }
-        .btn-entrar { background: var(--accent); color: white; border: none; padding: 0 25px; cursor: pointer; font-weight: bold; }
-        .btn-geo { width: 100%; padding: 15px; border: 2px solid var(--accent); border-radius: 10px; background: white; font-family: 'Syne'; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+        .input-group { display: flex; border: 2px solid var(--accent); border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
+        .input-group input { flex: 1; border: none; padding: 15px; font-family: 'DM Mono'; font-size: 20px; outline: none; }
+        .btn-entrar { background: var(--accent); color: white; border: none; padding: 0 20px; cursor: pointer; font-weight: bold; }
+        .btn-geo { width: 100%; padding: 15px; border: 2px solid var(--accent); border-radius: 10px; background: white; font-family: 'Syne'; font-weight: 700; cursor: pointer; }
 
-        /*
+        /* --- SISTEMA PRINCIPAL --- */
+        #sistema-auditoria { display: none; }
+        header { background: var(--azul); color: var(--white); padding: 15px; text-align: center; }
+        .tabs { display: flex; background: white; border-bottom: 1px solid var(--cinza2); position: sticky; top: 0; z-index: 1000; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-family: 'Syne'; font-weight: 700; color: var(--muted); cursor: pointer; text-transform: uppercase; font-size: 11px; }
+        .tab-btn.active { color: var(--azul); border-bottom: 3px solid var(--azul); }
+        .tab-content { display: none; padding: 15px; }
+        .tab-content.active { display: block; }
+
+        #map { height: 380px; border-radius: 10px; border: 1px solid var(--cinza2); margin-bottom: 15px; }
+
+        /* ALERTAS */
+        .btn-limpar { width: 100%; padding: 10px; margin-bottom: 15px; background: var(--cinza2); border: none; border-radius: 8px; font-family: 'DM Mono'; font-size: 10px; cursor: pointer; }
+        .card-alerta { background: white; border-left: 6px solid var(--vermelho); padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px
