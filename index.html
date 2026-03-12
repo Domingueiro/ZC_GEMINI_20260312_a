@@ -29,7 +29,6 @@
         .portal-card { text-align: center; max-width: 400px; width: 100%; padding: 40px; background: rgba(255, 255, 255, 0.3); border-radius: 24px; backdrop-filter: blur(10px); border: 1px solid rgba(26, 58, 92, 0.05); }
         .portal-card h1 { font-family: 'DM Serif Display', serif; font-size: 42px; margin: 0; color: var(--accent); }
 
-        /* ÍCONE DO LEMA */
         .portal-lema-icon {
             display: inline-flex; align-items: center; justify-content: center;
             background-color: #000000; color: var(--ouro-alaranjado);
@@ -47,7 +46,7 @@
 
         /* --- SISTEMA (ZELADOR) --- */
         #sistema-auditoria { display: none; }
-        header { background: var(--azul); color: var(--white); padding: 18px 20px 14px; text-align: center; position: relative; }
+        header { background: var(--azul); color: var(--white); padding: 18px 20px 14px; text-align: center; }
         header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 0.12em; color: var(--ouro); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         .lema-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.2em; color: rgba(255,255,255,0.7); text-transform: uppercase; margin-top: 4px; }
         
@@ -71,6 +70,7 @@
         
         .bairro-header { background: linear-gradient(135deg, var(--azul), var(--azul-vivo)); border-radius: 12px; margin: 0 12px 12px; padding: 20px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .bairro-nome { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--ouro); letter-spacing: 1px; }
+        .rua-detalhe { font-family: 'DM Mono'; font-size: 0.75rem; opacity: 0.9; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -96,21 +96,22 @@
         <div class="lema-sub">Transformando Visão em Poder</div>
     </header>
 
-    <div id="status-wrap"><div class="spin"></div><span id="status-texto">Sincronizando dados territoriais...</span></div>
+    <div id="status-wrap"><div class="spin"></div><span id="status-texto">Sincronizando logradouro...</span></div>
 
     <div id="map"></div>
 
     <div id="resultados" style="display:none;">
         <div class="bairro-header">
-            <div class="bairro-nome" id="r-bairro">Carregando...</div>
-            <div id="r-cep" style="font-family: 'DM Mono'; font-size: 0.8rem; opacity: 0.8;">CEP 00000-000</div>
+            <div class="bairro-nome" id="r-bairro">...</div>
+            <div class="rua-detalhe" id="r-rua">Carregando endereço...</div>
+            <div id="r-cep" style="font-family: 'DM Mono'; font-size: 0.75rem; opacity: 0.7; margin-top: 2px;">CEP 00000-000</div>
         </div>
 
         <div class="metricas-grid">
             <div class="metrica"><div class="metrica-label">📋 Obras Ativas</div><div class="metrica-valor" id="r-obras">0</div></div>
             <div class="metrica"><div class="metrica-label">💰 Investimento</div><div class="metrica-valor" id="r-invest">R$ 0</div></div>
             <div class="metrica"><div class="metrica-label">📈 Retorno Local</div><div class="metrica-valor" id="r-retorno">0%</div></div>
-            <div class="metrica"><div class="metrica-label">⚠ Disparidade</div><div class="metrica-valor" id="r-disparidade">Calculando...</div></div>
+            <div class="metrica"><div class="metrica-label">⚠ Disparidade</div><div class="metrica-valor" id="r-disparidade">...</div></div>
         </div>
 
         <div class="card">
@@ -134,12 +135,11 @@
     var mapa = null;
     var marcador = null;
 
-    // BANCO DE DADOS INTEGRADO
     const REGIOES = {
-        centro: { bairro: 'Sé / República', obras: 34, invest: 'R$ 48.2 mi', retorno: 18, disp: '2.1x acima da média', analise: 'Região com alta densidade de contratos de zeladoria e recapeamento.', alertas: ['Indício de sobrepreço em contrato de varrição (TCM)'], lista: [{n:'Revitalização Calçadão', s:'Em obra', v:'R$ 12mi'}] },
-        norte: { bairro: 'Santana / Tucuruvi', obras: 18, invest: 'R$ 21.5 mi', retorno: 11, disp: '1.2x abaixo da média', analise: 'Foco em obras de contenção de encostas e drenagem pluvial.', alertas: ['Atraso em licitação de UBS local'], lista: [{n:'Canalização Córrego', s:'Prevista', v:'R$ 5.3mi'}] },
-        leste: { bairro: 'Guaianases / Itaim Pta', obras: 9, invest: 'R$ 8.4 mi', retorno: 5, disp: '3.2x abaixo da média', analise: 'Historicamente desatendida em comparação à arrecadação de IPTU.', alertas: ['Déficit de investimento em pavimentação'], lista: [{n:'Reforma de EMEF', s:'Parada', v:'R$ 1.2mi'}] },
-        geral: { bairro: 'São Paulo (Território)', obras: 14, invest: 'R$ 16.0 mi', retorno: 10, disp: 'Média Municipal', analise: 'Dados baseados na média da subprefeitura local.', alertas: ['Consulte o portal TCM para detalhes'], lista: [{n:'Tapa-buraco Regional', s:'Contínuo', v:'R$ 2.1mi'}] }
+        centro: { obras: 34, invest: 'R$ 48.2 mi', retorno: 18, disp: '2.1x acima da média', analise: 'Região com alta densidade de contratos de zeladoria e recapeamento.', alertas: ['Indício de sobrepreço em contrato de varrição (TCM)'], lista: [{n:'Revitalização Calçadão', s:'Em obra', v:'R$ 12mi'}] },
+        norte: { obras: 18, invest: 'R$ 21.5 mi', retorno: 11, disp: '1.2x abaixo da média', analise: 'Foco em obras de contenção de encostas e drenagem pluvial.', alertas: ['Atraso em licitação de UBS local'], lista: [{n:'Canalização Córrego', s:'Prevista', v:'R$ 5.3mi'}] },
+        leste: { obras: 9, invest: 'R$ 8.4 mi', retorno: 5, disp: '3.2x abaixo da média', analise: 'Historicamente desatendida em comparação à arrecadação de IPTU.', alertas: ['Déficit de investimento em pavimentação'], lista: [{n:'Reforma de EMEF', s:'Parada', v:'R$ 1.2mi'}] },
+        geral: { obras: 14, invest: 'R$ 16.0 mi', retorno: 10, disp: 'Média Municipal', analise: 'Dados baseados na média da subprefeitura local.', alertas: ['Consulte o portal TCM para detalhes'], lista: [{n:'Tapa-buraco Regional', s:'Contínuo', v:'R$ 2.1mi'}] }
     };
 
     function entrarPeloPortal() {
@@ -179,14 +179,16 @@
             const r = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
             const d = await r.json();
             
-            const geo = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${d.bairro}, São Paulo`);
+            // RESTABELECENDO SINCRONISMO: Busca por Logradouro + Bairro + Cidade
+            const enderecoBusca = `${d.logradouro}, ${d.bairro}, São Paulo`;
+            const geo = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(enderecoBusca)}`);
             const gd = await geo.json();
             
             if (gd[0]) {
                 const lat = parseFloat(gd[0].lat), lon = parseFloat(gd[0].lon);
-                mapa.setView([lat, lon], 14);
+                mapa.setView([lat, lon], 16); // Zoom mais próximo (16) para ver a rua
                 if (marcador) mapa.removeLayer(marcador);
-                marcador = L.marker([lat, lon]).addTo(mapa).bindPopup(`<b>${d.bairro}</b>`).openPopup();
+                marcador = L.marker([lat, lon]).addTo(mapa).bindPopup(`<b>${d.logradouro}</b>`).openPopup();
             }
             render(cep, d);
         } catch(e) { console.error(e); }
@@ -200,8 +202,10 @@
         else if(cep.startsWith('08') || cep.startsWith('09')) reg = REGIOES.leste;
         else if(cep.startsWith('02') || cep.startsWith('03')) reg = REGIOES.norte;
 
-        document.getElementById('r-bairro').textContent = info.bairro || reg.bairro;
+        document.getElementById('r-bairro').textContent = info.bairro || "São Paulo";
+        document.getElementById('r-rua').textContent = info.logradouro || "Logradouro não identificado";
         document.getElementById('r-cep').textContent = "CEP " + cep;
+        
         document.getElementById('r-obras').textContent = reg.obras;
         document.getElementById('r-invest').textContent = reg.invest;
         document.getElementById('r-retorno').textContent = reg.retorno + "%";
@@ -212,7 +216,6 @@
         document.getElementById('r-obras-lista').innerHTML = reg.lista.map(o => `<div class="obra-item"><div><b>${o.n}</b><br><small>${o.s}</small></div><div style="color:var(--azul); font-weight:bold;">${o.v}</div></div>`).join('');
     }
 
-    // Máscara CEP
     document.getElementById('portal-cep-input').addEventListener('input', e => {
         let v = e.target.value.replace(/\D/g,'');
         if(v.length > 5) v = v.slice(0,5) + '-' + v.slice(5,8);
