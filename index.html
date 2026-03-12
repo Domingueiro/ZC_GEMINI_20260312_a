@@ -20,63 +20,33 @@
         body { background: var(--bg); color: var(--accent); font-family: 'Barlow', sans-serif; min-height: 100vh; }
 
         /* --- PORTAL DE ENTRADA --- */
-        #portal-entrada {
-            position: fixed; inset: 0; z-index: 9999;
-            background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 20px;
-        }
-        .portal-card { 
-            text-align: center; max-width: 500px; width: 100%; 
-            padding: 40px; background: white; border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid var(--cinza2);
-        }
+        #portal-entrada { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .portal-card { text-align: center; max-width: 500px; width: 100%; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid var(--cinza2); }
         .portal-card h1 { font-family: 'DM Serif Display', serif; font-size: 42px; color: var(--accent); margin-bottom: 10px; }
+        .lema-destaque { background: #000; color: var(--ouro-alaranjado); font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; text-transform: uppercase; padding: 15px; border-radius: 10px; margin: 20px 0 30px; border: 2px solid var(--ouro-alaranjado); }
 
-        .lema-destaque {
-            background: #000; color: var(--ouro-alaranjado);
-            font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700;
-            text-transform: uppercase; padding: 15px; border-radius: 10px;
-            margin: 20px 0 30px; border: 2px solid var(--ouro-alaranjado);
-        }
+        .input-group { display: flex; border: 2px solid var(--accent); border-radius: 10px; overflow: hidden; margin-bottom: 15px; background: white; }
+        .input-group input { flex: 1; border: none; padding: 18px; font-family: 'DM Mono'; font-size: 22px; outline: none; width: 100%; }
+        .btn-entrar { background: var(--accent); color: white; border: none; padding: 0 25px; cursor: pointer; font-weight: bold; font-size: 18px; }
+        .btn-geo { width: 100%; padding: 15px; border: 2px solid var(--accent); border-radius: 10px; background: white; font-family: 'Syne'; font-weight: 700; cursor: pointer; text-transform: uppercase; }
 
-        .input-group { display: flex; border: 2px solid var(--accent); border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
-        .input-group input { flex: 1; border: none; padding: 15px; font-family: 'DM Mono'; font-size: 20px; outline: none; }
-        .btn-entrar { background: var(--accent); color: white; border: none; padding: 0 20px; cursor: pointer; font-weight: bold; }
-        .btn-geo { width: 100%; padding: 15px; border: 2px solid var(--accent); border-radius: 10px; background: white; font-family: 'Syne'; font-weight: 700; cursor: pointer; }
-
-        /* --- SISTEMA PRINCIPAL --- */
+        /* --- SISTEMA --- */
         #sistema-auditoria { display: none; }
         header { background: var(--azul); color: var(--white); padding: 15px; text-align: center; }
-        
         .tabs { display: flex; background: white; border-bottom: 1px solid var(--cinza2); position: sticky; top: 0; z-index: 1000; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-family: 'Syne'; font-weight: 700; color: var(--muted); cursor: pointer; text-transform: uppercase; font-size: 12px; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-family: 'Syne'; font-weight: 700; color: var(--muted); cursor: pointer; text-transform: uppercase; font-size: 11px; }
         .tab-btn.active { color: var(--azul); border-bottom: 3px solid var(--azul); }
-
         .tab-content { display: none; padding: 15px; }
         .tab-content.active { display: block; }
-
         #map { height: 380px; border-radius: 10px; border: 1px solid var(--cinza2); margin-bottom: 15px; }
 
-        /* ALERTAS */
-        .btn-limpar { width: 100%; padding: 10px; margin-bottom: 15px; background: var(--cinza2); border: none; border-radius: 8px; font-family: 'DM Mono'; font-size: 11px; cursor: pointer; font-weight: bold; text-transform: uppercase; color: var(--accent); }
-        .btn-limpar:hover { background: #ccd1d9; }
-
-        .card-alerta { 
-            background: white; border-left: 5px solid var(--vermelho); 
-            padding: 18px; margin-bottom: 12px; border-radius: 8px; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid var(--cinza2);
-            border-left-width: 6px; transition: all 0.3s ease;
-        }
-        
+        /* ALERTAS PISCANTES */
+        .btn-limpar { width: 100%; padding: 10px; margin-bottom: 15px; background: var(--cinza2); border: none; border-radius: 8px; font-family: 'DM Mono'; font-size: 10px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .card-alerta { background: white; border-left: 6px solid var(--vermelho); padding: 18px; margin-bottom: 12px; border-radius: 8px; border: 1px solid var(--cinza2); border-left-width: 6px; transition: all 0.3s ease; }
         @keyframes pulse-bg { 0% { background: white; } 50% { background: #fff0f0; box-shadow: 0 0 15px rgba(211, 47, 47, 0.2); } 100% { background: white; } }
-        
-        .card-alerta.piscante { 
-            animation: pulse-bg 1.5s infinite; 
-            border-left: 10px solid var(--vermelho); 
-            transform: scale(1.02);
-            z-index: 10;
-        }
+        .card-alerta.piscante { animation: pulse-bg 1.5s infinite; border-left: 10px solid var(--vermelho); transform: scale(1.02); }
 
-        /* RADAR NO MAPA */
+        /* RADAR */
         .radar-icon { width: 18px; height: 18px; background: var(--vermelho); border-radius: 50%; border: 2px solid white; position: relative; cursor: pointer; }
         .radar-icon::after { content: ''; position: absolute; width: 100%; height: 100%; background: var(--vermelho); border-radius: 50%; animation: pulse-radar 1.2s infinite; opacity: 0.5; top: 0; left: 0; }
         @keyframes pulse-radar { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(3.5); opacity: 0; } }
@@ -89,7 +59,7 @@
         <h1>Zelador Cívico</h1>
         <div class="lema-destaque">Transformando Visão em Poder</div>
         <div class="input-group">
-            <input type="text" id="cep-input" placeholder="00000-000" maxlength="9">
+            <input type="text" id="cep-input" placeholder="00000-000" maxlength="9" inputmode="numeric">
             <button class="btn-entrar" onclick="acessarComCep()">OK</button>
         </div>
         <button class="btn-geo" onclick="acessarComGeo()">📍 USAR LOCALIZAÇÃO</button>
@@ -97,108 +67,115 @@
 </div>
 
 <div id="sistema-auditoria">
-    <header>
-        <h2 style="font-family: 'Bebas Neue'; color: var(--ouro); letter-spacing: 2px;">⚖ ZELADOR CÍVICO</h2>
-    </header>
-
+    <header><h2 style="font-family: 'Bebas Neue'; color: var(--ouro); letter-spacing: 2px;">⚖ ZELADOR CÍVICO</h2></header>
     <div class="tabs">
         <button class="tab-btn active" onclick="mudarAba('radar', this)">RADAR</button>
         <button class="tab-btn" onclick="mudarAba('alertas', this)">ALERTAS</button>
         <button class="tab-btn" onclick="mudarAba('investimento', this)">INVESTIMENTO</button>
     </div>
-
-    <div id="tab-radar" class="tab-content active">
-        <div id="map"></div>
-        <p style="text-align: center; font-size: 11px; color: var(--muted); font-family: 'DM Mono';">CLIQUE NOS PONTOS PULSANTES PARA DETALHAR</p>
-    </div>
-
+    <div id="tab-radar" class="tab-content active"><div id="map"></div></div>
     <div id="tab-alertas" class="tab-content">
-        <button class="btn-limpar" onclick="limparDestaques()">✕ Interromper Alertas / Limpar Visão</button>
-        <div id="lista-alertas">
-            </div>
+        <button class="btn-limpar" onclick="limparDestaques()">✕ LIMPAR AUDITORIA</button>
+        <div id="lista-alertas"></div>
     </div>
-
-    <div id="tab-investimento" class="tab-content">
-        <div style="text-align: center; padding: 60px 20px;">
-            <h3 style="font-family: 'Syne'; margin-bottom: 15px;">Arrecadação vs. Investimento</h3>
-            <div style="font-size: 40px; margin-bottom: 20px;">📊</div>
-            <p style="font-family: 'DM Mono'; font-size: 13px; color: var(--muted);">Pilar "Chave-Segurança" em fase de integração de dados.</p>
-        </div>
-    </div>
+    <div id="tab-investimento" class="tab-content"><div style="text-align: center; padding: 50px;">📊 Dados de Arrecadação em breve...</div></div>
 </div>
 
 <script>
     var mapa = null;
     var markersLayer = L.layerGroup();
-    
-    // Banco de Dados Simulado
     const ALERTAS_DB = [
-        { id: 1, titulo: "Sobrepreço em Licitação", desc: "Contrato de recapeamento asfáltico com valores 40% acima da média de mercado para esta região.", status: "Auditoria Financeira" },
-        { id: 2, titulo: "Obra Paralisada", desc: "A reforma da praça central está sem operários há mais de 60 dias. Pagamento de 30% já liberado.", status: "Fiscalização Urbana" },
-        { id: 3, titulo: "Déficit de Retorno Local", desc: "Bairro com alta arrecadação de IPTU mas retorno em infraestrutura 70% abaixo do esperado.", status: "Disparidade Cívica" }
+        { id: 1, titulo: "Sobrepreço Detectado", desc: "Licitação de asfalto com valores 40% acima da média.", status: "Auditoria Financeira" },
+        { id: 2, titulo: "Obra Paralisada", desc: "Reforma da praça sem operários há mais de 60 dias.", status: "Fiscalização Urbana" }
     ];
 
-    // Máscara CEP
-    document.getElementById('cep-input').oninput = function(e) {
-        let v = e.target.value.replace(/\D/g, '');
-        if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5, 8);
+    // MÁSCARA CORRIGIDA: Não trava a digitação e garante o hífen
+    document.getElementById('cep-input').addEventListener('input', function(e) {
+        let v = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+        if (v.length > 5) v = v.substring(0, 5) + '-' + v.substring(5, 8);
         e.target.value = v;
-    };
+    });
 
     function mudarAba(id, btn) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
         document.getElementById('tab-' + id).classList.add('active');
-        if(id === 'radar' && mapa) {
-            setTimeout(() => mapa.invalidateSize(), 200);
-        }
+        if(id === 'radar' && mapa) setTimeout(() => mapa.invalidateSize(), 200);
     }
 
     function acessarComCep() {
-        const raw = document.getElementById('cep-input').value.replace(/\D/g, '');
-        if(raw.length === 8) iniciarSistema(raw);
-        else alert("Digite o CEP completo.");
-    }
-
-    function acessarComGeo() {
-        if (!navigator.geolocation) return alert("GPS indisponível.");
-        navigator.geolocation.getCurrentPosition(p => {
-            iniciarSistema("01001000"); // CEP Padrão para SP Centro, centralizado depois pelo GPS
-        }, () => alert("Erro ao obter GPS. Use o CEP."));
+        const val = document.getElementById('cep-input').value.replace(/\D/g, ''); // LIMPA O HÍFEN PARA PROCESSAR
+        if(val.length === 8) {
+            iniciarSistema(val);
+        } else {
+            alert("Digite o CEP completo (8 números).");
+        }
     }
 
     function iniciarSistema(cep) {
         document.getElementById('portal-entrada').style.display = 'none';
         document.getElementById('sistema-auditoria').style.display = 'block';
-        
         if(!mapa) {
             mapa = L.map('map').setView([-23.55, -46.63], 12);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapa);
             markersLayer.addTo(mapa);
         }
-
-        fetch(`https://viacep.com.br/ws/${cep}/json/`)
-            .then(r => r.json())
-            .then(d => {
-                const query = d.logradouro ? d.logradouro + ", São Paulo" : d.bairro + ", São Paulo";
-                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
-                    .then(r => r.json())
-                    .then(g => {
-                        if(g[0]) {
-                            const lat = parseFloat(g[0].lat), lon = parseFloat(g[0].lon);
-                            mapa.setView([lat, lon], 16);
-                            L.marker([lat, lon]).addTo(mapa).bindPopup("Área de Auditoria").openPopup();
-                            gerarPontosRadar(lat, lon);
-                        }
-                    });
-                renderizarListaAlertas();
-            });
+        fetch(`https://viacep.com.br/ws/${cep}/json/`).then(r => r.json()).then(d => {
+            const query = d.logradouro ? d.logradouro + ", São Paulo" : d.bairro + ", São Paulo";
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                .then(r => r.json()).then(g => {
+                    if(g[0]) {
+                        const lat = parseFloat(g[0].lat), lon = parseFloat(g[0].lon);
+                        mapa.setView([lat, lon], 16);
+                        L.marker([lat, lon]).addTo(mapa).bindPopup("Área de Auditoria").openPopup();
+                        gerarRadar(lat, lon);
+                    }
+                });
+            renderAlertas();
+        });
     }
 
-    function gerarPontosRadar(lat, lon) {
+    function gerarRadar(lat, lon) {
         markersLayer.clearLayers();
         ALERTAS_DB.forEach(a => {
             const icon = L.divIcon({ className: '', html: '<div class="radar-icon"></div>', iconSize: [18, 18] });
             const m = L.marker([lat + (Math.random()-0.5)*0.006, lon + (Math.random()-0.5)*0.006], { icon: icon });
-            m.addTo(markersLayer).on('click',
+            m.addTo(markersLayer).on('click', () => {
+                mudarAba('alertas', document.querySelectorAll('.tab-btn')[1]);
+                focarAlerta(a.id);
+            });
+        });
+    }
+
+    function renderAlertas() {
+        document.getElementById('lista-alertas').innerHTML = ALERTAS_DB.map(a => `
+            <div class="card-alerta" id="alerta-${a.id}">
+                <strong style="color:var(--vermelho);">${a.titulo}</strong>
+                <p style="margin:8px 0;">${a.desc}</p>
+                <small>STATUS: ${a.status}</small>
+            </div>
+        `).join('');
+    }
+
+    function focarAlerta(id) {
+        limparDestaques();
+        setTimeout(() => {
+            const el = document.getElementById('alerta-' + id);
+            if(el) {
+                el.classList.add('piscante');
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 300);
+    }
+
+    function limparDestaques() {
+        document.querySelectorAll('.card-alerta').forEach(c => c.classList.remove('piscante'));
+    }
+
+    function acessarComGeo() {
+        navigator.geolocation.getCurrentPosition(() => iniciarSistema("01001000"), () => alert("Erro GPS"));
+    }
+</script>
+</body>
+</html>
