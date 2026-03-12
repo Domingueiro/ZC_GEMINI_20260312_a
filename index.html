@@ -14,7 +14,6 @@
             --bg: #f5f2ec; --accent: #1a3a5c; --muted: #8a8478; --white: #ffffff;
             --azul: #003f6b; --ouro: #FFD700; --ouro-alaranjado: #FFB800;
             --vermelho: #d32f2f; --cinza2: #dde1e7;
-            --laranja-alerta: #ff6600; /* Cor intensa para Emendas */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,30 +33,145 @@
         /* --- SISTEMA --- */
         #sistema-auditoria { display: none; }
         header { background: var(--azul); color: var(--white); padding: 15px; text-align: center; }
-        
         .tabs { display: flex; background: white; border-bottom: 1px solid var(--cinza2); position: sticky; top: 0; z-index: 1000; }
-        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: none; font-family: 'Syne'; font-weight: 700; color: var(--muted); cursor: pointer; text-transform: uppercase; font-size: 10px; border-bottom: 3px solid transparent; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-family: 'Syne'; font-weight: 700; color: var(--muted); cursor: pointer; text-transform: uppercase; font-size: 11px; }
         .tab-btn.active { color: var(--azul); border-bottom: 3px solid var(--azul); }
-        
-        /* DESTAQUE DA ABA EMENDAS */
-        .tab-btn.btn-emendas { color: var(--laranja-alerta); }
-        .tab-btn.btn-emendas.active { border-bottom: 3px solid var(--laranja-alerta); background: #fff5f0; }
-
         .tab-content { display: none; padding: 15px; }
         .tab-content.active { display: block; }
-        #map { height: 350px; border-radius: 10px; border: 1px solid var(--cinza2); margin-bottom: 15px; }
+        #map { height: 380px; border-radius: 10px; border: 1px solid var(--cinza2); margin-bottom: 15px; }
 
-        /* PAINEL DE EMENDAS */
-        .painel-emendas { background: var(--laranja-alerta); color: white; border-radius: 12px; padding: 25px; text-align: center; box-shadow: 0 5px 15px rgba(255,102,0,0.3); margin-bottom: 20px; }
-        .painel-emendas h3 { font-family: 'Bebas Neue'; font-size: 2rem; letter-spacing: 1px; }
-        .valor-emenda { font-family: 'DM Mono'; font-size: 2.5rem; font-weight: bold; margin: 10px 0; color: #fff; }
-        .info-emenda { background: white; color: #333; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: left; border-left: 5px solid #000; }
-
-        /* ALERTA PISCANTE */
-        .card-alerta { background: white; border-left: 6px solid var(--vermelho); padding: 15px; margin-bottom: 12px; border-radius: 8px; border: 1px solid var(--cinza2); }
+        /* ALERTAS */
+        .btn-limpar { width: 100%; padding: 10px; margin-bottom: 15px; background: var(--cinza2); border: none; border-radius: 8px; font-family: 'DM Mono'; font-size: 10px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .card-alerta { background: white; border-left: 6px solid var(--vermelho); padding: 18px; margin-bottom: 12px; border-radius: 8px; border: 1px solid var(--cinza2); transition: all 0.3s ease; }
         @keyframes pulse-bg { 0% { background: white; } 50% { background: #fff0f0; } 100% { background: white; } }
-        .card-alerta.piscante { animation: pulse-bg 1.5s infinite; transform: scale(1.02); border-left-width: 10px; }
+        .card-alerta.piscante { animation: pulse-bg 1.5s infinite; border-left-width: 10px; transform: scale(1.02); }
 
         /* RADAR */
         .radar-icon { width: 18px; height: 18px; background: var(--vermelho); border-radius: 50%; border: 2px solid white; position: relative; cursor: pointer; }
-        .radar-icon::after { content: ''; position: absolute; width: 100%; height: 100%; background: var(--vermelho); border-radius: 5
+        .radar-icon::after { content: ''; position: absolute; width: 100%; height: 100%; background: var(--vermelho); border-radius: 50%; animation: pulse-radar 1.2s infinite; opacity: 0.5; top: 0; left: 0; }
+        @keyframes pulse-radar { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(3.5); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+<div id="portal-entrada">
+    <div class="portal-card">
+        <h1>Zelador Cívico</h1>
+        <div class="lema-destaque">Transformando Visão em Poder</div>
+        <div class="input-group">
+            <input type="text" id="cep-input" placeholder="00000-000" maxlength="9" inputmode="numeric">
+            <button class="btn-entrar" onclick="acessarComCep()">OK</button>
+        </div>
+        <button class="btn-geo" onclick="acessarComGeo()">📍 USAR LOCALIZAÇÃO</button>
+    </div>
+</div>
+
+<div id="sistema-auditoria">
+    <header><h2 style="font-family: 'Bebas Neue'; color: var(--ouro); letter-spacing: 2px;">⚖ ZELADOR CÍVICO</h2></header>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="mudarAba('radar', this)">RADAR</button>
+        <button class="tab-btn" onclick="mudarAba('alertas', this)">ALERTAS</button>
+        <button class="tab-btn" onclick="mudarAba('investimento', this)">INVESTIMENTO</button>
+    </div>
+    <div id="tab-radar" class="tab-content active"><div id="map"></div></div>
+    <div id="tab-alertas" class="tab-content">
+        <button class="btn-limpar" onclick="limparDestaques()">✕ LIMPAR AUDITORIA</button>
+        <div id="lista-alertas"></div>
+    </div>
+    <div id="tab-investimento" class="tab-content"><div style="text-align:center; padding:50px;">📊 Módulo de Investimento em breve...</div></div>
+</div>
+
+<script>
+    var mapa = null;
+    var markersLayer = L.layerGroup();
+    const ALERTAS_DB = [
+        { id: 1, titulo: "Sobrepreço Detectado", desc: "Licitação de asfalto com valores 40% acima da média." },
+        { id: 2, titulo: "Obra Paralisada", desc: "Reforma da praça sem operários há mais de 60 dias." }
+    ];
+
+    // Máscara CEP Blindada
+    document.getElementById('cep-input').addEventListener('input', function(e) {
+        let v = e.target.value.replace(/\D/g, '');
+        if (v.length > 5) v = v.substring(0, 5) + '-' + v.substring(5, 8);
+        e.target.value = v;
+    });
+
+    function mudarAba(id, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + id).classList.add('active');
+        if(id === 'radar' && mapa) setTimeout(() => mapa.invalidateSize(), 200);
+    }
+
+    function acessarComCep() {
+        const val = document.getElementById('cep-input').value.replace(/\D/g, '');
+        if(val.length === 8) iniciarSistema(val);
+        else alert("Digite o CEP completo.");
+    }
+
+    function iniciarSistema(cep) {
+        document.getElementById('portal-entrada').style.display = 'none';
+        document.getElementById('sistema-auditoria').style.display = 'block';
+        if(!mapa) {
+            mapa = L.map('map').setView([-23.55, -46.63], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapa);
+            markersLayer.addTo(mapa);
+        }
+        fetch(`https://viacep.com.br/ws/${cep}/json/`).then(r => r.json()).then(d => {
+            const q = (d.logradouro || d.bairro) + ", São Paulo";
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`)
+                .then(r => r.json()).then(g => {
+                    if(g[0]) {
+                        const lat = parseFloat(g[0].lat), lon = parseFloat(g[0].lon);
+                        mapa.setView([lat, lon], 16);
+                        L.marker([lat, lon]).addTo(mapa);
+                        gerarRadar(lat, lon);
+                    }
+                });
+            renderAlertas();
+        });
+    }
+
+    function gerarRadar(lat, lon) {
+        markersLayer.clearLayers();
+        ALERTAS_DB.forEach(a => {
+            const icon = L.divIcon({ className: '', html: '<div class="radar-icon"></div>', iconSize: [18, 18] });
+            const m = L.marker([lat + (Math.random()-0.5)*0.006, lon + (Math.random()-0.5)*0.006], { icon: icon });
+            m.addTo(markersLayer).on('click', () => {
+                mudarAba('alertas', document.querySelectorAll('.tab-btn')[1]);
+                focarAlerta(a.id);
+            });
+        });
+    }
+
+    function renderAlertas() {
+        document.getElementById('lista-alertas').innerHTML = ALERTAS_DB.map(a => `
+            <div class="card-alerta" id="alerta-${a.id}">
+                <strong>${a.titulo}</strong>
+                <p style="margin-top:5px; font-size:14px;">${a.desc}</p>
+            </div>
+        `).join('');
+    }
+
+    function focarAlerta(id) {
+        limparDestaques(); // Garante que apenas UM pisque
+        setTimeout(() => {
+            const el = document.getElementById('alerta-' + id);
+            if(el) {
+                el.classList.add('piscante');
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 300);
+    }
+
+    function limparDestaques() {
+        document.querySelectorAll('.card-alerta').forEach(c => c.classList.remove('piscante'));
+    }
+
+    function acessarComGeo() {
+        navigator.geolocation.getCurrentPosition(() => iniciarSistema("01001000"), () => alert("Erro GPS"));
+    }
+</script>
+</body>
+</html>
