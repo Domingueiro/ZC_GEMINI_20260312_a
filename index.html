@@ -3,125 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor de Emendas — Zelador Cívico</title>
+    <title>Monitor de Emendas Operacional — Zelador Cívico</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=Syne:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=Syne:wght@700&family=Bebas+Neue&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
-        body { background: #f5f2ec; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+        :root { --ouro: #FFD700; --laranja: #e67e22; --azul: #003f6b; --bg: #f5f2ec; }
+        body { background: var(--bg); font-family: 'Barlow', sans-serif; display: flex; justify-content: center; padding: 20px; }
         
         .modulo-emendas { 
-            background: white; width: 100%; max-width: 400px; 
+            background: white; width: 100%; max-width: 450px; 
             border-radius: 15px; border: 2px solid #000; overflow: hidden;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        .topo-preto { background: #000; color: #FFD700; padding: 15px; text-align: center; }
-        .topo-preto h2 { font-family: 'Bebas Neue'; letter-spacing: 2px; margin: 0; }
+        .topo-preto { background: #000; color: var(--ouro); padding: 15px; text-align: center; border-bottom: 2px solid var(--ouro); }
+        .topo-preto h2 { font-family: 'Bebas Neue'; letter-spacing: 2px; margin: 0; font-size: 24px; }
 
         .conteudo { padding: 20px; text-align: center; }
+
+        /* CONTROLES MANUAIS (TRIMESTRES) */
+        .controles-trimestre { display: flex; gap: 5px; margin-bottom: 20px; }
+        .btn-tri { 
+            flex: 1; padding: 10px 5px; border: 1px solid #000; background: #fff; 
+            font-family: 'DM Mono'; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .btn-tri.active { background: #000; color: var(--ouro); }
+
+        .chart-container { position: relative; height: 280px; margin-bottom: 20px; }
+
+        /* CAIXAS DE DETALHAMENTO COM ATALHOS */
+        .painel-detalhe { text-align: left; background: #fffcf0; border: 1px solid #ddd; border-radius: 8px; padding: 15px; }
+        .titulo-auditoria { color: var(--laranja); font-family: 'Syne'; font-size: 12px; text-transform: uppercase; display: block; margin-bottom: 8px; }
+        .desc-auditoria { font-size: 14px; line-height: 1.4; margin-bottom: 12px; display: block; }
         
-        .ano-box { 
-            display: inline-block; background: #000; color: #FFD700; 
-            font-family: 'DM Mono'; font-size: 20px; padding: 5px 15px; 
-            border-radius: 5px; margin-bottom: 20px;
+        .atalho-link { 
+            display: inline-flex; align-items: center; background: #000; color: #fff; 
+            padding: 8px 12px; border-radius: 5px; text-decoration: none; font-family: 'DM Mono'; 
+            font-size: 11px; font-weight: bold; transition: 0.3s;
         }
-
-        .chart-container { position: relative; height: 300px; margin-bottom: 20px; }
-
-        .legenda-auditoria { 
-            background: #fffcf0; border: 1px dashed #e67e22; 
-            padding: 15px; border-radius: 8px; text-align: left;
-        }
-        .legenda-auditoria strong { color: #e67e22; font-family: 'Syne'; font-size: 12px; }
-        .legenda-auditoria p { font-size: 13px; margin-top: 5px; color: #444; line-height: 1.4; }
+        .atalho-link:hover { background: var(--azul); color: var(--ouro); }
+        .atalho-link span { margin-left: 8px; border-left: 1px solid #444; padding-left: 8px; color: var(--ouro); }
     </style>
 </head>
 <body>
 
 <div class="modulo-emendas">
-    <div class="topo-preto">
-        <h2>DESTINO DAS EMENDAS</h2>
-    </div>
+    <div class="topo-preto"><h2>AUDITORIA DE DESTINO</h2></div>
 
     <div class="conteudo">
-        <div class="ano-box" id="display-ano">QUADRIMESTRE 1</div>
+        <div class="controles-trimestre">
+            <button class="btn-tri active" onclick="selecionarTri(0, this)">1º TRI</button>
+            <button class="btn-tri" onclick="selecionarTri(1, this)">2º TRI</button>
+            <button class="btn-tri" onclick="selecionarTri(2, this)">3º TRI</button>
+            <button class="btn-tri" onclick="selecionarTri(3, this)">4º TRI</button>
+        </div>
 
         <div class="chart-container">
             <canvas id="graficoDestinoEmendas"></canvas>
         </div>
 
-        <div class="legenda-auditoria">
-            <strong>🔍 AUDITORIA DE FLUXO</strong>
-            <p id="info-texto">Asfalto e Recapeamento lideram a concentração de emendas neste período.</p>
+        <div class="painel-detalhe">
+            <strong class="titulo-auditoria">📍 Foco da Verba</strong>
+            <span id="info-texto" class="desc-auditoria">Asfalto e Recapeamento lideram a concentração de emendas neste trimestre.</span>
+            
+            <a href="#" class="atalho-link" id="link-auditoria">
+                VER DETALHAMENTO <span>ONGs/ASSOC.</span>
+            </a>
         </div>
     </div>
 </div>
 
 <script>
     const ctx = document.getElementById('graficoDestinoEmendas').getContext('2d');
-    const displayAno = document.getElementById('display-ano');
     const infoTexto = document.getElementById('info-texto');
+    const linkAuditoria = document.getElementById('link-auditoria');
 
-    // Dados que mudam dinamicamente simulando a distribuição de emendas
-    const ciclosEmendas = [
+    const dadosTrimestres = [
         {
-            label: "QUADRIMESTRE 1",
             dados: [45, 15, 20, 20],
-            texto: "Forte concentração em Obras de Asfalto (45%) via emendas impositivas."
+            texto: "1º Trimestre: Predomínio de emendas para infraestrutura asfáltica imediata.",
+            link: "detalhe_obras.html"
         },
         {
-            label: "QUADRIMESTRE 2",
             dados: [20, 40, 10, 30],
-            texto: "Mudança de fluxo para Saúde Bucal e ONGs Esportivas neste período."
+            texto: "2º Trimestre: Alocação expressiva para Associações de Saúde e Bem-estar.",
+            link: "detalhe_ongs_saude.html"
         },
         {
-            label: "QUADRIMESTRE 3",
-            dados: [10, 10, 60, 20],
-            texto: "Pico de emendas destinadas a Eventos e Reformas de Praças (60%)."
+            dados: [15, 15, 50, 20],
+            texto: "3º Trimestre: Verbas concentradas em Associações Culturais e Eventos de Bairro.",
+            link: "detalhe_associacoes_cultura.html"
+        },
+        {
+            dados: [25, 25, 20, 30],
+            texto: "4º Trimestre: Distribuição equilibrada entre ONGs de assistência social.",
+            link: "detalhe_ongs_social.html"
         }
     ];
-
-    let indiceAtual = 0;
 
     const grafico = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Asfalto', 'Saúde', 'Praças/Eventos', 'ONGs'],
+            labels: ['Asfalto', 'Saúde', 'Cultura/Praças', 'ONGs'],
             datasets: [{
-                data: ciclosEmendas[0].dados,
+                data: dadosTrimestres[0].dados,
                 backgroundColor: ['#e67e22', '#003f6b', '#FFD700', '#d32f2f'],
                 borderColor: '#000',
-                borderWidth: 2,
-                hoverOffset: 10
+                borderWidth: 2
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { font: { family: 'DM Mono', size: 10 }, color: '#000' }
-                }
+                legend: { position: 'bottom', labels: { font: { family: 'DM Mono', size: 10 } } }
             },
-            cutout: '65%' // Deixa o furo do meio maior para parecer um radar
+            cutout: '70%'
         }
     });
 
-    // Animação do Tempo
-    setInterval(() => {
-        indiceAtual = (indiceAtual + 1) % ciclosEmendas.length;
-        
-        const novoCiclo = ciclosEmendas[indiceAtual];
-        
-        displayAno.innerText = novoCiclo.label;
-        infoTexto.innerText = novoCiclo.texto;
-        
-        grafico.data.datasets[0].data = novoCiclo.dados;
+    function selecionarTri(indice, botao) {
+        // Atualiza Botões
+        document.querySelectorAll('.btn-tri').forEach(b => b.classList.remove('active'));
+        botao.classList.add('active');
+
+        // Atualiza Gráfico
+        const tri = dadosTrimestres[indice];
+        grafico.data.datasets[0].data = tri.dados;
         grafico.update();
-    }, 4000); // Muda a cada 4 segundos
+
+        // Atualiza Texto e Link
+        infoTexto.innerText = tri.texto;
+        linkAuditoria.setAttribute('href', tri.link);
+    }
 </script>
 
 </body>
