@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor de Emendas Operacional — Zelador Cívico</title>
+    <title>Auditoria Operacional — Zelador Cívico</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=Syne:wght@700&family=Bebas+Neue&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
@@ -23,7 +23,6 @@
 
         .conteudo { padding: 20px; text-align: center; }
 
-        /* CONTROLES MANUAIS (TRIMESTRES) */
         .controles-trimestre { display: flex; gap: 5px; margin-bottom: 20px; }
         .btn-tri { 
             flex: 1; padding: 10px 5px; border: 1px solid #000; background: #fff; 
@@ -31,20 +30,19 @@
         }
         .btn-tri.active { background: #000; color: var(--ouro); }
 
-        .chart-container { position: relative; height: 280px; margin-bottom: 20px; }
+        .chart-container { position: relative; height: 280px; margin-bottom: 20px; cursor: pointer; }
 
-        /* CAIXAS DE DETALHAMENTO COM ATALHOS */
         .painel-detalhe { text-align: left; background: #fffcf0; border: 1px solid #ddd; border-radius: 8px; padding: 15px; }
         .titulo-auditoria { color: var(--laranja); font-family: 'Syne'; font-size: 12px; text-transform: uppercase; display: block; margin-bottom: 8px; }
         .desc-auditoria { font-size: 14px; line-height: 1.4; margin-bottom: 12px; display: block; }
         
         .atalho-link { 
             display: inline-flex; align-items: center; background: #000; color: #fff; 
-            padding: 8px 12px; border-radius: 5px; text-decoration: none; font-family: 'DM Mono'; 
-            font-size: 11px; font-weight: bold; transition: 0.3s;
+            padding: 10px 15px; border-radius: 5px; text-decoration: none; font-family: 'DM Mono'; 
+            font-size: 11px; font-weight: bold; transition: 0.3s; width: 100%; justify-content: center;
         }
-        .atalho-link:hover { background: var(--azul); color: var(--ouro); }
-        .atalho-link span { margin-left: 8px; border-left: 1px solid #444; padding-left: 8px; color: var(--ouro); }
+        .atalho-link:hover { background: var(--laranja); }
+        .atalho-link span { margin-left: 8px; color: var(--ouro); }
     </style>
 </head>
 <body>
@@ -65,11 +63,11 @@
         </div>
 
         <div class="painel-detalhe">
-            <strong class="titulo-auditoria">📍 Foco da Verba</strong>
-            <span id="info-texto" class="desc-auditoria">Asfalto e Recapeamento lideram a concentração de emendas neste trimestre.</span>
+            <strong class="titulo-auditoria">🔍 Clique no gráfico para auditar</strong>
+            <span id="info-texto" class="desc-auditoria">Selecione uma fatia ou trimestre para ver o destino detalhado das verbas.</span>
             
-            <a href="#" class="atalho-link" id="link-auditoria">
-                VER DETALHAMENTO <span>ONGs/ASSOC.</span>
+            <a href="detalhe_geral.html" class="atalho-link" id="link-auditoria">
+                ABRIR RELATÓRIO DE <span>EMENDAS</span>
             </a>
         </div>
     </div>
@@ -81,32 +79,16 @@
     const linkAuditoria = document.getElementById('link-auditoria');
 
     const dadosTrimestres = [
-        {
-            dados: [45, 15, 20, 20],
-            texto: "1º Trimestre: Predomínio de emendas para infraestrutura asfáltica imediata.",
-            link: "detalhe_obras.html"
-        },
-        {
-            dados: [20, 40, 10, 30],
-            texto: "2º Trimestre: Alocação expressiva para Associações de Saúde e Bem-estar.",
-            link: "detalhe_ongs_saude.html"
-        },
-        {
-            dados: [15, 15, 50, 20],
-            texto: "3º Trimestre: Verbas concentradas em Associações Culturais e Eventos de Bairro.",
-            link: "detalhe_associacoes_cultura.html"
-        },
-        {
-            dados: [25, 25, 20, 30],
-            texto: "4º Trimestre: Distribuição equilibrada entre ONGs de assistência social.",
-            link: "detalhe_ongs_social.html"
-        }
+        { dados: [45, 15, 20, 20], texto: "1º TRI: Foco em Infraestrutura e Asfalto.", link: "detalhe_obras.html" },
+        { dados: [20, 40, 10, 30], texto: "2º TRI: Verbas para Saúde e Associações.", link: "detalhe_ongs.html" },
+        { dados: [15, 15, 50, 20], texto: "3º TRI: Concentração em Cultura e Eventos.", link: "detalhe_cultura.html" },
+        { dados: [25, 25, 20, 30], texto: "4º TRI: Apoio a ONGs e Projetos Sociais.", link: "detalhe_social.html" }
     ];
 
     const grafico = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Asfalto', 'Saúde', 'Cultura/Praças', 'ONGs'],
+            labels: ['Asfalto', 'Saúde', 'Cultura', 'ONGs'],
             datasets: [{
                 data: dadosTrimestres[0].dados,
                 backgroundColor: ['#e67e22', '#003f6b', '#FFD700', '#d32f2f'],
@@ -118,23 +100,54 @@
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'bottom', labels: { font: { family: 'DM Mono', size: 10 } } }
+                legend: { 
+                    position: 'bottom',
+                    labels: { font: { family: 'DM Mono', size: 10 } },
+                    // CORREÇÃO: Impede que o item suma ao clicar na legenda
+                    onClick: (e, legendItem, legend) => {
+                        const index = legendItem.index;
+                        auditarCategoria(index);
+                    }
+                }
             },
-            cutout: '70%'
+            cutout: '70%',
+            // CORREÇÃO: Evento de clique na fatia do gráfico
+            onClick: (evt, activeElements) => {
+                if (activeElements.length > 0) {
+                    const index = activeElements[0].index;
+                    auditarCategoria(index);
+                }
+            }
         }
     });
 
+    function auditarCategoria(index) {
+        const labels = grafico.data.labels;
+        const categoria = labels[index];
+        const triAtual = document.querySelector('.btn-tri.active').innerText;
+        
+        // Simulação de navegação: altera o link e o texto antes de "ir" para a tela
+        infoTexto.innerText = `Abrindo detalhamento de ${categoria} para o ${triAtual}...`;
+        
+        // Aqui você definiria o destino real baseado na categoria
+        const destinos = {
+            0: "detalhe_asfalto.html",
+            1: "detalhe_saude.html",
+            2: "detalhe_cultura.html",
+            3: "detalhe_ongs.html"
+        };
+        
+        window.location.href = destinos[index] || "#";
+    }
+
     function selecionarTri(indice, botao) {
-        // Atualiza Botões
         document.querySelectorAll('.btn-tri').forEach(b => b.classList.remove('active'));
         botao.classList.add('active');
 
-        // Atualiza Gráfico
         const tri = dadosTrimestres[indice];
         grafico.data.datasets[0].data = tri.dados;
         grafico.update();
 
-        // Atualiza Texto e Link
         infoTexto.innerText = tri.texto;
         linkAuditoria.setAttribute('href', tri.link);
     }
