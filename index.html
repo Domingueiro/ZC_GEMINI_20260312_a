@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auditoria Operacional — Zelador Cívico</title>
+    <title>Auditoria Direta — Zelador Cívico</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
@@ -28,30 +28,30 @@
         .controles-trimestre { display: flex; gap: 5px; margin-bottom: 25px; }
         .btn-tri { 
             flex: 1; padding: 10px 5px; border: 1px solid #000; background: #fff; 
-            font-family: 'DM Mono'; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;
+            font-family: 'DM Mono'; font-size: 11px; font-weight: bold; cursor: pointer;
         }
         .btn-tri.active { background: #000; color: var(--ouro); }
 
-        .chart-container { position: relative; height: 320px; margin-bottom: 25px; cursor: crosshair; }
+        .chart-container { position: relative; height: 340px; margin-bottom: 20px; cursor: pointer; }
 
-        .painel-detalhe { text-align: left; background: #fffcf0; border: 1px solid #ddd; border-radius: 8px; padding: 15px; min-height: 120px; display: flex; flex-direction: column; justify-content: space-between; }
-        .titulo-auditoria { color: var(--laranja); font-family: 'Syne'; font-size: 12px; text-transform: uppercase; display: block; margin-bottom: 8px; }
-        .desc-auditoria { font-size: 16px; font-weight: 600; line-height: 1.2; margin-bottom: 15px; color: var(--azul); }
-        
-        .atalho-link { 
-            display: inline-flex; align-items: center; background: #000; color: #fff; 
-            padding: 12px; border-radius: 5px; text-decoration: none; font-family: 'DM Mono'; 
-            font-size: 11px; font-weight: bold; transition: 0.3s; width: 100%; justify-content: center;
-            opacity: 0.5; pointer-events: none; /* Desativado até selecionar fatia */
+        /* PAINEL DE INFORMAÇÃO SEM BOTÃO */
+        .painel-feedback { 
+            text-align: center; background: #000; border-radius: 8px; 
+            padding: 20px; border: 1px solid var(--ouro); transition: 0.3s;
         }
-        .atalho-link.active { opacity: 1; pointer-events: auto; background: var(--azul); }
-        .atalho-link span { margin-left: 8px; color: var(--ouro); }
+        .desc-auditoria { 
+            font-family: 'DM Mono'; font-size: 14px; color: var(--ouro); 
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        
+        /* Efeito de destaque ao clicar */
+        .feedback-active { background: var(--laranja); transform: scale(1.02); }
     </style>
 </head>
 <body>
 
 <div class="modulo-emendas">
-    <div class="topo-preto"><h2>AUDITORIA DE DESTINO</h2></div>
+    <div class="topo-preto"><h2>AUDITORIA TERRITORIAL</h2></div>
 
     <div class="conteudo">
         <div class="controles-trimestre">
@@ -65,26 +65,18 @@
             <canvas id="graficoDestinoEmendas"></canvas>
         </div>
 
-        <div class="painel-detalhe">
-            <div>
-                <strong class="titulo-auditoria">🔍 Auditoria Territorial</strong>
-                <span id="info-texto" class="desc-auditoria">Selecione uma área no gráfico para detalhar</span>
-            </div>
-            
-            <a href="#" class="atalho-link" id="btn-detalhar">
-                DETALHAR INVESTIMENTO EM <span id="label-selecionada">...</span>
-            </a>
+        <div class="painel-feedback" id="painel-info">
+            <span id="texto-status" class="desc-auditoria">Toque em uma área para detalhar</span>
         </div>
     </div>
 </div>
 
 <script>
-    Chart.register(ChartDataLabels); // Ativa o plugin de labels
+    Chart.register(ChartDataLabels);
 
     const ctx = document.getElementById('graficoDestinoEmendas').getContext('2d');
-    const infoTexto = document.getElementById('info-texto');
-    const btnDetalhar = document.getElementById('btn-detalhar');
-    const labelSelecionada = document.getElementById('label-selecionada');
+    const textoStatus = document.getElementById('texto-status');
+    const painelInfo = document.getElementById('painel-info');
 
     const dadosTrimestres = [
         { dados: [45, 15, 20, 20], labels: ['Asfalto', 'Saúde', 'Cultura', 'ONGs'] },
@@ -108,41 +100,41 @@
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { display: false }, // REGRAS: Retira a legenda
-                datalabels: { // REGRAS: Exibe info e percentual no gráfico
+                legend: { display: false },
+                datalabels: {
                     color: '#000',
-                    font: { family: 'DM Mono', weight: 'bold', size: 10 },
+                    font: { family: 'DM Mono', weight: 'bold', size: 11 },
                     formatter: (value, ctx) => {
                         let label = ctx.chart.data.labels[ctx.dataIndex];
                         return label + '\n' + value + '%';
                     },
-                    anchor: 'end',
-                    align: 'start',
-                    offset: 10,
-                    backgroundColor: 'rgba(255,215,0,0.8)',
-                    borderRadius: 3,
-                    padding: 4
+                    anchor: 'center',
+                    backgroundColor: 'rgba(255,215,0,0.9)',
+                    borderRadius: 4,
+                    padding: 6
                 }
             },
-            cutout: '60%',
+            cutout: '55%',
             onClick: (evt, activeElements) => {
                 if (activeElements.length > 0) {
                     const index = activeElements[0].index;
-                    const valor = grafico.data.datasets[0].data[index];
                     const label = grafico.data.labels[index];
-                    atualizarPainel(label, valor);
+                    const valor = grafico.data.datasets[0].data[index];
+                    executarRedirecionamento(label, valor);
                 }
             }
         }
     });
 
-    function atualizarPainel(label, valor) {
-        infoTexto.innerText = `${label}: Corresponde a ${valor}% das emendas deste período.`;
-        labelSelecionada.innerText = label.toUpperCase();
-        
-        // Ativa o botão e define o link com âncora para destacar na outra tela
-        btnDetalhar.classList.add('active');
-        btnDetalhar.href = `detalhamento.html#section-${label.toLowerCase()}`;
+    function executarRedirecionamento(label, valor) {
+        // Feedback visual imediato
+        painelInfo.classList.add('feedback-active');
+        textoStatus.innerText = `ACESSANDO: ${label} (${valor}%)`;
+
+        // Pequeno delay para o usuário perceber o clique antes de mudar de tela
+        setTimeout(() => {
+            window.location.href = `detalhamento.html#${label.toLowerCase()}`;
+        }, 400);
     }
 
     function selecionarTri(indice, botao) {
@@ -152,10 +144,8 @@
         grafico.data.datasets[0].data = dadosTrimestres[indice].dados;
         grafico.update();
 
-        // Reseta o painel ao trocar o trimestre
-        infoTexto.innerText = "Selecione uma área no gráfico para detalhar";
-        labelSelecionada.innerText = "...";
-        btnDetalhar.classList.remove('active');
+        textoStatus.innerText = "Toque em uma área para detalhar";
+        painelInfo.classList.remove('feedback-active');
     }
 </script>
 
