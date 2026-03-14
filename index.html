@@ -6,6 +6,8 @@
     <title>Auditoria Operacional — Zelador Cívico</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=Syne:wght@700&family=Bebas+Neue&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
@@ -23,25 +25,26 @@
 
         .conteudo { padding: 20px; text-align: center; }
 
-        .controles-trimestre { display: flex; gap: 5px; margin-bottom: 20px; }
+        .controles-trimestre { display: flex; gap: 5px; margin-bottom: 25px; }
         .btn-tri { 
             flex: 1; padding: 10px 5px; border: 1px solid #000; background: #fff; 
             font-family: 'DM Mono'; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;
         }
         .btn-tri.active { background: #000; color: var(--ouro); }
 
-        .chart-container { position: relative; height: 280px; margin-bottom: 20px; cursor: pointer; }
+        .chart-container { position: relative; height: 320px; margin-bottom: 25px; cursor: crosshair; }
 
-        .painel-detalhe { text-align: left; background: #fffcf0; border: 1px solid #ddd; border-radius: 8px; padding: 15px; }
+        .painel-detalhe { text-align: left; background: #fffcf0; border: 1px solid #ddd; border-radius: 8px; padding: 15px; min-height: 120px; display: flex; flex-direction: column; justify-content: space-between; }
         .titulo-auditoria { color: var(--laranja); font-family: 'Syne'; font-size: 12px; text-transform: uppercase; display: block; margin-bottom: 8px; }
-        .desc-auditoria { font-size: 14px; line-height: 1.4; margin-bottom: 12px; display: block; }
+        .desc-auditoria { font-size: 16px; font-weight: 600; line-height: 1.2; margin-bottom: 15px; color: var(--azul); }
         
         .atalho-link { 
             display: inline-flex; align-items: center; background: #000; color: #fff; 
-            padding: 10px 15px; border-radius: 5px; text-decoration: none; font-family: 'DM Mono'; 
+            padding: 12px; border-radius: 5px; text-decoration: none; font-family: 'DM Mono'; 
             font-size: 11px; font-weight: bold; transition: 0.3s; width: 100%; justify-content: center;
+            opacity: 0.5; pointer-events: none; /* Desativado até selecionar fatia */
         }
-        .atalho-link:hover { background: var(--laranja); }
+        .atalho-link.active { opacity: 1; pointer-events: auto; background: var(--azul); }
         .atalho-link span { margin-left: 8px; color: var(--ouro); }
     </style>
 </head>
@@ -63,32 +66,37 @@
         </div>
 
         <div class="painel-detalhe">
-            <strong class="titulo-auditoria">🔍 Clique no gráfico para auditar</strong>
-            <span id="info-texto" class="desc-auditoria">Selecione uma fatia ou trimestre para ver o destino detalhado das verbas.</span>
+            <div>
+                <strong class="titulo-auditoria">🔍 Auditoria Territorial</strong>
+                <span id="info-texto" class="desc-auditoria">Selecione uma área no gráfico para detalhar</span>
+            </div>
             
-            <a href="detalhe_geral.html" class="atalho-link" id="link-auditoria">
-                ABRIR RELATÓRIO DE <span>EMENDAS</span>
+            <a href="#" class="atalho-link" id="btn-detalhar">
+                DETALHAR INVESTIMENTO EM <span id="label-selecionada">...</span>
             </a>
         </div>
     </div>
 </div>
 
 <script>
+    Chart.register(ChartDataLabels); // Ativa o plugin de labels
+
     const ctx = document.getElementById('graficoDestinoEmendas').getContext('2d');
     const infoTexto = document.getElementById('info-texto');
-    const linkAuditoria = document.getElementById('link-auditoria');
+    const btnDetalhar = document.getElementById('btn-detalhar');
+    const labelSelecionada = document.getElementById('label-selecionada');
 
     const dadosTrimestres = [
-        { dados: [45, 15, 20, 20], texto: "1º TRI: Foco em Infraestrutura e Asfalto.", link: "detalhe_obras.html" },
-        { dados: [20, 40, 10, 30], texto: "2º TRI: Verbas para Saúde e Associações.", link: "detalhe_ongs.html" },
-        { dados: [15, 15, 50, 20], texto: "3º TRI: Concentração em Cultura e Eventos.", link: "detalhe_cultura.html" },
-        { dados: [25, 25, 20, 30], texto: "4º TRI: Apoio a ONGs e Projetos Sociais.", link: "detalhe_social.html" }
+        { dados: [45, 15, 20, 20], labels: ['Asfalto', 'Saúde', 'Cultura', 'ONGs'] },
+        { dados: [20, 40, 10, 30], labels: ['Asfalto', 'Saúde', 'Cultura', 'ONGs'] },
+        { dados: [15, 15, 50, 20], labels: ['Asfalto', 'Saúde', 'Cultura', 'ONGs'] },
+        { dados: [25, 25, 20, 30], labels: ['Asfalto', 'Saúde', 'Cultura', 'ONGs'] }
     ];
 
     const grafico = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Asfalto', 'Saúde', 'Cultura', 'ONGs'],
+            labels: dadosTrimestres[0].labels,
             datasets: [{
                 data: dadosTrimestres[0].dados,
                 backgroundColor: ['#e67e22', '#003f6b', '#FFD700', '#d32f2f'],
@@ -100,56 +108,54 @@
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { 
-                    position: 'bottom',
-                    labels: { font: { family: 'DM Mono', size: 10 } },
-                    // CORREÇÃO: Impede que o item suma ao clicar na legenda
-                    onClick: (e, legendItem, legend) => {
-                        const index = legendItem.index;
-                        auditarCategoria(index);
-                    }
+                legend: { display: false }, // REGRAS: Retira a legenda
+                datalabels: { // REGRAS: Exibe info e percentual no gráfico
+                    color: '#000',
+                    font: { family: 'DM Mono', weight: 'bold', size: 10 },
+                    formatter: (value, ctx) => {
+                        let label = ctx.chart.data.labels[ctx.dataIndex];
+                        return label + '\n' + value + '%';
+                    },
+                    anchor: 'end',
+                    align: 'start',
+                    offset: 10,
+                    backgroundColor: 'rgba(255,215,0,0.8)',
+                    borderRadius: 3,
+                    padding: 4
                 }
             },
-            cutout: '70%',
-            // CORREÇÃO: Evento de clique na fatia do gráfico
+            cutout: '60%',
             onClick: (evt, activeElements) => {
                 if (activeElements.length > 0) {
                     const index = activeElements[0].index;
-                    auditarCategoria(index);
+                    const valor = grafico.data.datasets[0].data[index];
+                    const label = grafico.data.labels[index];
+                    atualizarPainel(label, valor);
                 }
             }
         }
     });
 
-    function auditarCategoria(index) {
-        const labels = grafico.data.labels;
-        const categoria = labels[index];
-        const triAtual = document.querySelector('.btn-tri.active').innerText;
+    function atualizarPainel(label, valor) {
+        infoTexto.innerText = `${label}: Corresponde a ${valor}% das emendas deste período.`;
+        labelSelecionada.innerText = label.toUpperCase();
         
-        // Simulação de navegação: altera o link e o texto antes de "ir" para a tela
-        infoTexto.innerText = `Abrindo detalhamento de ${categoria} para o ${triAtual}...`;
-        
-        // Aqui você definiria o destino real baseado na categoria
-        const destinos = {
-            0: "detalhe_asfalto.html",
-            1: "detalhe_saude.html",
-            2: "detalhe_cultura.html",
-            3: "detalhe_ongs.html"
-        };
-        
-        window.location.href = destinos[index] || "#";
+        // Ativa o botão e define o link com âncora para destacar na outra tela
+        btnDetalhar.classList.add('active');
+        btnDetalhar.href = `detalhamento.html#section-${label.toLowerCase()}`;
     }
 
     function selecionarTri(indice, botao) {
         document.querySelectorAll('.btn-tri').forEach(b => b.classList.remove('active'));
         botao.classList.add('active');
 
-        const tri = dadosTrimestres[indice];
-        grafico.data.datasets[0].data = tri.dados;
+        grafico.data.datasets[0].data = dadosTrimestres[indice].dados;
         grafico.update();
 
-        infoTexto.innerText = tri.texto;
-        linkAuditoria.setAttribute('href', tri.link);
+        // Reseta o painel ao trocar o trimestre
+        infoTexto.innerText = "Selecione uma área no gráfico para detalhar";
+        labelSelecionada.innerText = "...";
+        btnDetalhar.classList.remove('active');
     }
 </script>
 
